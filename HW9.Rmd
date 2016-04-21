@@ -19,6 +19,7 @@ Note that there are some missing values in the data set that were coded as -99. 
 
 ```{r setup,warning=F,message=F,fig.width=10, fig.height=8, echo=F}
 # eatingatt_data<-read.csv("https://montana.box.com/shared/static/ihwz8fjd024a5e8zuxzwgs90q2zhxpmc.csv",na.strings=-99)
+
 eatingatt_data <- read.csv("eating.csv")
 ead_c<-na.omit(eatingatt_data) #Cleaning up the data set to allow focus on other aspects - could retain nearly 60 partial observations 
 require(psych)
@@ -30,9 +31,9 @@ cor.plot(mat.sort(cor(ead_c[,-c(1,12:14)])))
 
 require(lavaan)
 require(polycor)
+require(semPlot)
 
 edo<-apply(ead_c[,-c(1,12:14)],2,ordered)
-hetcor(edo)
 
 require(pander)
 knitr::opts_chunk$set(echo=F, warning=F, message=F, cache=T, comment=NA, size="footnotesize", fig.width=6, fig.height=4, fig.align="center", dev="pdf", dev.args=list(pointsize=8))
@@ -90,27 +91,37 @@ cor.plot(mat.sort(cor(renamed[,-c(1,12:14)])))
 4) The previous result was using Pearson correlation. Identify a more appropriate correlation measure for these data (report it). Then estimate the correlation matrix using functions from the polycor package (not psych) and compare the correlations to those produced by Pearson correlation here, comparing the estimates and remaking the correlation matrix plot.
 
 ```{r p4_a}
-## not working
 edo<-apply(renamed[,-c(1,12:14)],2,ordered)
-hetcor(edo)
+polyc <- hetcor(edo)
+pearc <- cor(renamed[,-c(1,12:14)])
+max(as.matrix(polyc) - pearc)
+cor.plot(mat.sort(as.matrix(polyc)))
 ```
 
 5) Using your better named variables and your "better" correlation matrix, fit a CFA that puts eat21, eat3, and eat18 together on one latent trait and the other eat variables on the other. To make sure it is using your correlation matrix, use sample.cov and sample.nobs and do not provide the data set to the cfa function from lavaan. Report the summary output from the model with the latent trait variances fixed at one.
 
 ```{r p5_a}
+# eat21: I give too much time and thought to food.
+# eat3: I find myself preoccupied with food.
+# eat18: I feel that food controls my life.
 
+model <- 'food =~ time + controls + preoccupied
+          nonfood =~ empty + bodyfat + exercise + thinner + guilty + avoid + terrified'
+mcfa <- cfa(model, sample.cov = polyc$correlations, sample.nobs = 242, std.lv = T)
+pander(parTable(mcfa))
 ```
 
 6) Make a path diagram of the resulting model.
 
 ```{r p6_a}
-
+semPaths(mcfa, "par")
 ```
 
 7) Discuss the quality of the fit of the model using (a) the goodness of fit test and (b) one of the other measures of quality of fit. Make sure to fully report the numerical results as well as discussing what this tells you about the model.
 
 ```{r p7_a}
-
+# TODO There's got to be a better way! Most likely involving fitMeasures() 
+summary(mcfa, fit.measures=T)
 ```
 
 8) Discuss all the loadings - are there any that potentially could be dropped? 
@@ -120,19 +131,26 @@ hetcor(edo)
 10) Add the other three variables to your correlation matrix using appropriate correlation measures. Note the types of correlations you are using (you can discuss this generally). Also update your correlation matrix plot using this matrix.
 
 ```{r p10_a}
-
+eda <- cbind(edo, renamed[,12:14])
+allc <- hetcor(eda)
+cor.plot(mat.sort(as.matrix(allc)))
 ```
 
 11) Fit an SEM that retains the same latent variable construction as in the CFA but that also uses bmi, anx, and wsb as exogenous variables that explain both of the latent traits. Fit the model and report the summary. Also make a path diagram.
 
 ```{r p11_a}
-
+all.cfa <- cfa(model, sample.cov = polyc$correlations, sample.nobs = 242)
+sem.model <- paste(model, "\n bmi ~ food + nonfood
+                        wsb ~ food + nonfood
+                        anx ~ food + nonfood")
+sem.fit <- sem(sem.model, sample.cov = allc$correlations, sample.nobs = 242, std.lv=T)
+semPaths(sem.fit, "par")
 ```
 
 12) Report the evidence and discuss the interpretation of the two tests for the paths that relate bmi to each of the latent traits. 
 
 ```{r p12_a}
-
+summary(sem.fit, fit.measures=T)
 ```
 
 13) Generally explain what this model is exploring.
