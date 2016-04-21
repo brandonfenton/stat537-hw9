@@ -118,6 +118,7 @@ pander(parTable(mcfa))
 6) Make a path diagram of the resulting model.
 
 ```{r p6_a}
+require(semPlot)
 semPaths(mcfa, "par")
 ```
 
