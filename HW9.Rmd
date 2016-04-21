@@ -18,7 +18,8 @@ The numbers on the "eat" questions are the same as in the online survey although
 Note that there are some missing values in the data set that were coded as -99. The following code will get you going on this but is not complete:
 
 ```{r setup,warning=F,message=F,fig.width=10, fig.height=8, echo=F}
-eatingatt_data<-read.csv("https://montana.box.com/shared/static/ihwz8fjd024a5e8zuxzwgs90q2zhxpmc.csv",na.strings=-99)
+# eatingatt_data<-read.csv("https://montana.box.com/shared/static/ihwz8fjd024a5e8zuxzwgs90q2zhxpmc.csv",na.strings=-99)
+eatingatt_data <- read.csv("eating.csv")
 ead_c<-na.omit(eatingatt_data) #Cleaning up the data set to allow focus on other aspects - could retain nearly 60 partial observations 
 require(psych)
 describe(ead_c)
@@ -81,9 +82,9 @@ Using your new names re-run the provided cor.plot code (you do not need to repor
 ```{r p2_a, fig.width=10, fig.height=8}
 cor.plot(mat.sort(cor(renamed[,-c(1,12:14)])))
 ```
-EWEF
 
 3) Use the help information to explain how mat.sort() sorted the correlation matrix.
+
 "To see the structure of a correlation matrix, it is helpful to organize the items so that the similar items are grouped together. One such grouping technique is factor analysis. mat.sort will sort the items by a factor model (if specified), or any other order, __or by the loadings on the first factor (if unspecified)__
 
 4) The previous result was using Pearson correlation. Identify a more appropriate correlation measure for these data (report it). Then estimate the correlation matrix using functions from the polycor package (not psych) and compare the correlations to those produced by Pearson correlation here, comparing the estimates and remaking the correlation matrix plot.
