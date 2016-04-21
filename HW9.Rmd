@@ -90,7 +90,9 @@ cor.plot(mat.sort(cor(renamed[,-c(1,12:14)])))
 4) The previous result was using Pearson correlation. Identify a more appropriate correlation measure for these data (report it). Then estimate the correlation matrix using functions from the polycor package (not psych) and compare the correlations to those produced by Pearson correlation here, comparing the estimates and remaking the correlation matrix plot.
 
 ```{r p4_a}
-
+## not working
+edo<-apply(renamed[,-c(1,12:14)],2,ordered)
+hetcor(edo)
 ```
 
 5) Using your better named variables and your "better" correlation matrix, fit a CFA that puts eat21, eat3, and eat18 together on one latent trait and the other eat variables on the other. To make sure it is using your correlation matrix, use sample.cov and sample.nobs and do not provide the data set to the cfa function from lavaan. Report the summary output from the model with the latent trait variances fixed at one.
