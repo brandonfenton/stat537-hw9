@@ -84,11 +84,15 @@ Using your new names re-run the provided cor.plot code (you do not need to repor
 cor.plot(mat.sort(cor(renamed[,-c(1,12:14)])))
 ```
 
+All of the "eat" variables appear to be positively correlated, in varying magnitude. "bodyfat", "guilty", and "thinner" appear to be grouped together with very high correlations between them. All three variables could be viewed as negative towards eating and fat, hence the trait we call "negativity". Potentially another grouping of variables exist between "exercise", "avoid", and "terrified". In fact, we would consider the variable "empty" also shares some trait with these variables. This group of variables are moderately correlated with each other. They also have moderate to strong correlations with the previous group of variables, which suggests the variables may share some negativity towards eating and fat. These three variables may share a trait "coping". Each question associated with these variables may have triggered people to put into action some response to their feelings about food, either healthy or unhealthy. At the bottom of the plot, the variables "preoccupied" and "controls" are very highly correlated with each other and weak to moderately correlated with the other variables. The variable "time" also appears very correlated with these two. This set of variables are all have a food dominated relationship, hence they share the trait we call "domination". (__Maybe one of the names should be perception and one be anxiety.__)
+
 3) Use the help information to explain how mat.sort() sorted the correlation matrix.
 
-"To see the structure of a correlation matrix, it is helpful to organize the items so that the similar items are grouped together. One such grouping technique is factor analysis. mat.sort will sort the items by a factor model (if specified), or any other order, __or by the loadings on the first factor (if unspecified)__
+To paraphrase from the help information, __mat.sort()__ attempts to sory things by having similar items grouped together. It does this through factor analysis, sorting by size of the largest factor loading for each variable. The default method sorts by the loadings on the first factor.
 
 4) The previous result was using Pearson correlation. Identify a more appropriate correlation measure for these data (report it). Then estimate the correlation matrix using functions from the polycor package (not psych) and compare the correlations to those produced by Pearson correlation here, comparing the estimates and remaking the correlation matrix plot.
+
+Looks like the variables were sorted more "correctly". "empty" and "time" were flipped which makes sense, as were "terrified" and "exercise". Similar correlations are sen though as evidenced by none of the differences in correlations being greater than 0.0882. The pearson correlations were typically smaller, but a few were larger.
 
 ```{r p4_a}
 edo<-apply(renamed[,-c(1,12:14)],2,ordered)
