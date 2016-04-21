@@ -1,6 +1,6 @@
 ---
 title: "STAT 537 HW 9"
-author: "Doug Anderson and Brandon Fenton and Kenny Flagg"
+author: "Doug Anderson and Brandon Fenton"
 date: "Due April 21, 2016"
 output:
   pdf_document: default
@@ -43,7 +43,34 @@ panderOptions("round", 5)
 1) First make a table of the questions being used here and rename each "eat" variable to make it more explicit about what the question was focused on. 
 
 ```{r p1_a}
+questions <- c("I am terrified about being overweight.",
+"I avoid eating when I am hungry.",
+"I feel extremely guilty after eating.",
+"I am occupied with a desire to be thinner.",
+"I think about burning up calories when I exercise.",
+"I am preoccupied with the thought of having fat on my body.",
+"I like my stomach to be empty.",
+"I find myself preoccupied with food.",
+"I feel that food controls my life.",
+"I give too much time and thought to food.")
 
+new.names <-c("terrified",
+"avoid",
+"guilty",
+"thinner",
+"exercise",
+"bodyfat",
+"empty",
+"preoccupied",
+"controls",
+"time")
+
+q.table <- data.frame(questions, colnames(ead_c)[2:11], new.names)
+colnames(q.table) <- c("Questions", "Old name", "New Name")
+
+pander(q.table)
+renamed <- ead_c
+colnames(renamed)[2:11] <- new.names
 ```
 
 
@@ -51,12 +78,13 @@ Using your new names re-run the provided cor.plot code (you do not need to repor
 
 2) Discuss the correlation matrix pattern.
 
-```{r p2_a}
-
+```{r p2_a, fig.width=10, fig.height=8}
+cor.plot(mat.sort(cor(renamed[,-c(1,12:14)])))
 ```
+EWEF
 
 3) Use the help information to explain how mat.sort() sorted the correlation matrix.
-
+"To see the structure of a correlation matrix, it is helpful to organize the items so that the similar items are grouped together. One such grouping technique is factor analysis. mat.sort will sort the items by a factor model (if specified), or any other order, __or by the loadings on the first factor (if unspecified)__
 
 4) The previous result was using Pearson correlation. Identify a more appropriate correlation measure for these data (report it). Then estimate the correlation matrix using functions from the polycor package (not psych) and compare the correlations to those produced by Pearson correlation here, comparing the estimates and remaking the correlation matrix plot.
 
