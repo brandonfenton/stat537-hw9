@@ -22,5 +22,42 @@ max(as.matrix(polyc) - pearc)
 cor.plot(mat.sort(as.matrix(polyc)))
 ```
 
-5. 
+5. Change the name of the table? I don't think we need to say anything...
 
+6. Can we get the numbers to show up? Again, no words appear necessary...
+
+7. In testing $H_0:$ the model is adequate vs. $H_A:$ something more complex is needed, a goodness-of-fit test results in $\chi^2=114.706$ test-statistic value that follows a $\chi^2_{34}$ distribution under the null hypothesis. This results in a p-value < 0.001 which is very strong evidence that a model that is more complex is needed here. We also see that the model has an RMSEA (Root Mean Square Error of Approximation) of 0.099 (an approximate 90% confidence interval being (0.079, 0.119)) which is larger than the desirable 0.05 and again suggests the model is not a good fit. 
+
+8. All of the loadings (from the latent variable table) have very small p-values, suggesting strong evidence of their inclusion (all lines were testing $H_0: \lambda_i = 0$ vs. $H_A: \lambda_i \neq = 0$) despite the model not fitting well. __SHOULD WE BE TALKING ABOUT THE UNIQUENESSES?__
+
+9. The disattenuated correlation of the latent traits, food and nonfood, is 0.65. This suggests that there is quite a bit of shared information being explained by both these latent traits. Due to the nature of all the questions having some affiliation with eating, this seems to make sense. __MORE PROBABLY SHOULD BE DISCUSSED, BUT NOT SURE WHAT TO SAY YET.__ I wasn't sure if he said something about correlations between latent traits.
+
+10. Polychoric correlations were fit between two ordered categorical variables. Pearson correlations were fit between two quantitative variables. Polyserial correlations were fit between an ordered categorical variable and a quantitative variable. As an update to the previous discussion of the correlation plot, there are weak to moderate positive correlations between any of the quantitative variables and any other variables.
+
+11. I think you fit endogenous variables and not exogenous. Arrows should be going out, not in. I think it should be (pg 25 of CFA and SEM notes): maybe not based on a website I read....
+
+```{r p11_a, eval=F}
+all.cfa <- cfa(model, sample.cov = polyc$correlations, sample.nobs = 242)
+sem.model <- paste(model, "\n food ~ bmi
+                        nonfood ~ bmi
+                        food ~ wsb 
+                        nonfood ~ wsb
+                        food ~ anx
+                        nonfood ~ anx")
+sem.fit <- sem(sem.model, sample.cov = allc$correlations, sample.nobs = 242, std.lv=T)
+pander(parTable(sem.fit))
+summary(sem.fit, fit.measures=T)
+semPaths(sem.fit, "par")
+```
+
+What summary do we report? Do we need to discuss anything? GOF is still suggesting poor fit, do we care? AIC went up about 2000, does that matter? I mean does it make sense to compare a CFA to an SEM? Do we just give output and not discuss anything?
+
+12. Both tests have small p-values (<0.001) suggesting that bmi is helping to explain both variables.
+
+```{r p12_a, eval=F}
+summary(sem.fit, fit.measures=T)
+```
+
+If instead, you are correct in the order of the formula, the test for bmi involving food has a p-value of 0.076 which is moderate to weak evidence and the test for bmi involving nonfood has a p-value of 0.002 which is strong evidence. Are we suppose to say bmi causes nonfood or vice versa?
+
+13. Trying to explain underlying latent traits using the observed variables.???? It is trying to establish causality of latent variables.
