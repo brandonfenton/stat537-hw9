@@ -84,15 +84,15 @@ Using your new names re-run the provided cor.plot code (you do not need to repor
 cor.plot(mat.sort(cor(renamed[,-c(1,12:14)])))
 ```
 
-All of the "eat" variables appear to be positively correlated, in varying magnitude. "bodyfat", "guilty", and "thinner" appear to be grouped together with very high correlations between them. All three variables could be viewed as negative towards eating and fat, hence the trait we call "negativity". Potentially another grouping of variables exist between "exercise", "avoid", and "terrified". In fact, we would consider the variable "empty" also shares some trait with these variables. This group of variables are moderately correlated with each other. They also have moderate to strong correlations with the previous group of variables, which suggests the variables may share some negativity towards eating and fat. These three variables may share a trait "coping". Each question associated with these variables may have triggered people to put into action some response to their feelings about food, either healthy or unhealthy. At the bottom of the plot, the variables "preoccupied" and "controls" are very highly correlated with each other and weak to moderately correlated with the other variables. The variable "time" also appears very correlated with these two. This set of variables are all have a food dominated relationship, hence they share the trait we call "domination". (__Maybe one of the names should be perception and one be anxiety.__)
+All of the "eat" variables appear to be positively correlated, in varying magnitude. "bodyfat", "guilty", and "thinner" appear to be grouped together with very high correlations between them. All three variables could be viewed as negative towards eating and fat, hence the trait we call "negativity". Potentially another grouping of variables exist between "exercise", "avoid", and "terrified". In fact, we would consider the variable "empty" also shares some trait with these variables. This group of variables are moderately correlated with each other. They also have moderate to strong correlations with the previous group of variables, which suggests the variables may share some negativity towards eating and fat. These three variables may share a trait "coping". Each question associated with these variables may have triggered people to put into action some response to their feelings about food, either healthy or unhealthy. At the bottom of the plot, the variables "preoccupied" and "controls" are very highly correlated with each other and weak to moderately correlated with the other variables. The variable "time" also appears very correlated with these two. This set of variables all have a food dominated relationship, hence they share the trait we call "food." If we are concerned with this trait versus a trait comprised of the rest of the variables, we could call the second trait "nonfood."
 
 3) Use the help information to explain how mat.sort() sorted the correlation matrix.
 
-To paraphrase from the help information, __mat.sort()__ attempts to sory things by having similar items grouped together. It does this through factor analysis, sorting by size of the largest factor loading for each variable. The default method sorts by the loadings on the first factor.
+To paraphrase from the help information, __mat.sort()__ attempts to sort things by having similar items grouped together. It does this through factor analysis, sorting by size of the largest factor loading for each variable. The default method sorts by the loadings on the first factor.
 
 4) The previous result was using Pearson correlation. Identify a more appropriate correlation measure for these data (report it). Then estimate the correlation matrix using functions from the polycor package (not psych) and compare the correlations to those produced by Pearson correlation here, comparing the estimates and remaking the correlation matrix plot.
 
-Looks like the variables were sorted more "correctly". "empty" and "time" were flipped which makes sense, as were "terrified" and "exercise". Similar correlations are sen though as evidenced by none of the differences in correlations being greater than 0.0882. The pearson correlations were typically smaller, but a few were larger.
+Pearson correlation is appropriate when comparing two quantitative variables, but these variables are ordinal.  As such, polychoric correlation is appropriate.  In the correlation matrix plot produced using polychoric correlation the variables are sorted more "correctly," in that the three variables explaining the "food" latent variable are grouped together.  None of the correlations produced differ by more than 0.0882 from the corresponding Pearson correlation, however.
 
 ```{r p4_a}
 edo<-apply(renamed[,-c(1,12:14)],2,ordered)
@@ -129,9 +129,15 @@ semPaths(mcfa, "par")
 summary(mcfa, fit.measures=T)
 ```
 
+In testing $H_0:$ the model is adequate vs. $H_A:$ something more complex is needed, a goodness-of-fit test results in $\chi^2=114.706$ test-statistic value that follows a $\chi^2_{34}$ distribution under the null hypothesis. This results in a p-value < 0.001 which is very strong evidence that a model that is more complex is needed here. We also see that the model has an RMSEA (Root Mean Square Error of Approximation) of 0.099 (an approximate 90% confidence interval being (0.079, 0.119)) which is larger than the desirable 0.05 and again suggests the model is not a good fit. 
+
 8) Discuss all the loadings - are there any that potentially could be dropped? 
 
+All of the loadings (from the latent variable table) have very small p-values, suggesting strong evidence of their inclusion (all lines were testing $H_0: \lambda_i = 0$ vs. $H_A: \lambda_i \neq = 0$) despite the model not fitting well. __SHOULD WE BE TALKING ABOUT THE UNIQUENESSES?__ TODO
+
 9) Report and discuss the disattenuated correlation of the latent traits. Does this make sense in this application?
+
+The disattenuated correlation of the latent traits, food and nonfood, is 0.65. This suggests that there is quite a bit of shared information being explained by both these latent traits. Due to the nature of all the questions having some affiliation with eating, this seems to make sense. So if someone is very concerned with food (in terms of the three variables which define the "food" latent trait), then they are often also concerned with other eating-relating issues and vice-versa.
 
 10) Add the other three variables to your correlation matrix using appropriate correlation measures. Note the types of correlations you are using (you can discuss this generally). Also update your correlation matrix plot using this matrix.
 
@@ -140,6 +146,8 @@ eda <- cbind(edo, renamed[,12:14])
 allc <- hetcor(eda)
 cor.plot(mat.sort(as.matrix(allc)))
 ```
+
+Polychoric correlations were fit between two ordered categorical variables. Pearson correlations were fit between two quantitative variables. Polyserial correlations were fit between an ordered categorical variable and a quantitative variable. As an update to the previous discussion of the correlation plot, there are weak to moderate positive correlations between any of the quantitative variables and any other variables.
 
 11) Fit an SEM that retains the same latent variable construction as in the CFA but that also uses bmi, anx, and wsb as exogenous variables that explain both of the latent traits. Fit the model and report the summary. Also make a path diagram.
 
@@ -157,9 +165,11 @@ semPaths(sem.fit, "par")
 ```{r p12_a}
 summary(sem.fit, fit.measures=T)
 ```
+The test for bmi involving "food" has a p-value of 0.076 which is moderate to weak evidence that bmi causes the latent trait "food" and the test for bmi involving "nonfood" has a p-value of 0.002 which is strong evidence that bmi causes the latent trait nonfood.
 
 13) Generally explain what this model is exploring.
 
+This model is exploring the causal relationships between the manifest (observed) variables measured by the questions and the latent (unobserved) variables which are of primary interest.
 
 ## R Code Appendix:
 Problem 1:
